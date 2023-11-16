@@ -48,15 +48,12 @@ def get_discord_usernames_for_update():
 # Function to update "update" value in Google Sheet via SheetDB API
     def update_sheetdb_entry(username, update_value):
       try:
-        # Prepare the URL and headers
-
         url = f"{Gapi}/Discord%20username/{username}"
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-
-        # Prepare the data payload
+        
         data = {"data": {"update": update_value}}
 
         # Make the PATCH request
@@ -88,7 +85,6 @@ async def initiate_conversation(user):
 # Dictionary to track the next time a user should receive a message
 if "pending_responses" not in db.keys():
     db["pending_responses"] = {}
-# Loop interval for the bot to check whether it's time to send messages (1 day)
 loop_interval_seconds = 86400
 # Time delta for sending follow-up messages (1 week)
 message_time_delta_seconds = 604800
@@ -106,7 +102,7 @@ async def send_scheduled_messages():
         time_record_created = user_time_zone.localize(time_record_created_naive)
     except ValueError:
         print(f"Invalid timestamp format for username {username}: {timestamp}")
-        continue  # Skip this iteration and move on to the next record
+        continue
 
     if username not in db["next_send_time"]:
       next_send_time_for_user = time_record_created + timedelta(seconds=message_time_delta_seconds)
@@ -120,7 +116,7 @@ async def send_scheduled_messages():
       user = discord.utils.get(client.get_all_members(), name=username)
       if not user:
         print(f"User not found in guild: {username}")
-        continue  # Skip this iteration if the user is not found
+        continue
       if user:
         await initiate_conversation(user)
         new_next_send_time = current_time + timedelta(seconds=message_time_delta_seconds + interaction_wait_time_seconds)
@@ -128,8 +124,6 @@ async def send_scheduled_messages():
         print(f"Next message to {username} is scheduled for: {new_next_send_time}")
       else:
         print(f"User not found in guild: {username}")
-
-
 
 
 @tasks.loop(seconds=loop_interval_seconds)
