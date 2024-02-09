@@ -28,7 +28,6 @@ class MessageManager:
     async def initiate_conversation(self):
         # Retrieve overdue users
         usersToContact = self.scheduler.check_for_user_to_contact()
-
         for username in usersToContact:
             user = discord.utils.get(self.client.get_all_members(), name=username)
             if user:
@@ -48,8 +47,6 @@ class MessageManager:
     async def handle_user_response(self, message):
             username = message.author.name
             msg_content = message.content.lower()
-
-            # Check if this user has a pending response
             deadline_str = self.db_manager.get_pending_response(username)
             if deadline_str:
                 deadline = datetime.strptime(deadline_str, '%Y-%m-%dT%H:%M:%S.%f')
