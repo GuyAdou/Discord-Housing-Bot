@@ -36,9 +36,7 @@ class SchedulerDatabaseManager:
         return {username: datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%f%z') for username, time_str in self.db["awaiting_responses"].items()}
     
     def remove_user_awaiting_response(self, username):
-        """
-        Remove a user from the "awaiting_responses" list once they have responded.
-        """
+        #Remove a user from the "awaiting_responses" list once they have responded.
         if "awaiting_responses" in self.db.keys() and username in self.db["awaiting_responses"]:
             del self.db["awaiting_responses"][username]
 

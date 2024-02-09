@@ -24,17 +24,14 @@ class ResponseScheduler:
 
     def calculate_and_store_next_send_time(self, username, reference_time):
         try:
-
             localized_reference_time = reference_time.astimezone(self.user_time_zone)
 
             # Calculate next send time based on the localized reference time
             next_send_time_for_user = localized_reference_time + timedelta(seconds=self.NEXT_FOLLOWUP_MESSAGE_DELTA)
-
             # Store the next send time in the database
             self.db_manager.store_next_send_time(username, next_send_time_for_user)
         except Exception as e:
             print(f"Error calculating or storing next send time for {username}: {e}")
-
     
     def check_for_user_to_contact(self):
         usersToContact = {}

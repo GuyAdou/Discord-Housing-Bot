@@ -8,7 +8,6 @@ class MessageManager:
         self.scheduler = scheduler  # ResponseScheduler instance
         self.db_manager = db_manager  # SchedulerDatabaseManager instance
 
-
     async def on_message(message,housing_triggers):
         if message.author == client.user:
          return
@@ -24,17 +23,19 @@ class MessageManager:
             f"Looking for a roommate or housing? Add your profile to the up-to-date housing Google sheet!{GOOGLE_SHEET_URL}"
             )
 
-
     async def initiate_conversation(self):
-        # Retrieve overdue users
         usersToContact = self.scheduler.check_for_user_to_contact()
+
         for username in usersToContact:
             user = discord.utils.get(self.client.get_all_members(), name=username)
             if user:
                 # Send the initial conversation message
                 await user.send("Hi there!")
                 await user.send("Did you find a roommate or an apartment? Answer 'Yes' or 'No'. Thanks!")
+
                 current_time_str = datetime.now().strftime('%m/%d/%Y %H:%M:%S')
+
+                # Calculate and store the next send time for this user
                 self.scheduler.calculate_and_store_next_send_time(username, current_time_str)
             else:
                 print(f"User not found: {username}")
@@ -47,6 +48,7 @@ class MessageManager:
     async def handle_user_response(self, message):
             username = message.author.name
             msg_content = message.content.lower()
+            # Check if this user has a pending response
             deadline_str = self.db_manager.get_pending_response(username)
             if deadline_str:
                 deadline = datetime.strptime(deadline_str, '%Y-%m-%dT%H:%M:%S.%f')
@@ -61,11 +63,11 @@ class MessageManager:
                     elif msg_content == 'no':
                         await message.author.send("We will check back with you later. Thank you!")
                     else:
+    
                         await message.author.send("Invalid input. Please enter 'Yes' or 'No'.")
-
                 # Regardless of the response, remove the user from awaiting responses
                 self.db_manager.remove_user_awaiting_response(username)
-                
+                # Calculate and store the next send time only if needed
                 if msg_content != 'yes':  
                     self.scheduler.calculate_and_store_next_send_time(username, datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f'))
 

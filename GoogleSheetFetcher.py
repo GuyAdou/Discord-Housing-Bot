@@ -28,11 +28,16 @@ class GoogleSheetFetcher:
             return None
         
     async def remove_user_entry(self, username):
-        pass
-
-# Example of using the class
-Gapi_url = "your_sheet_api_url_here"
-fetcher = GoogleSheetFetcher(Gapi_url)
-fetcher.dataFetcher()
-processed_data = fetcher.dataProcessing()
-print(processed_data)
+        delete_url = f"{self.api_url}/username/{username}"
+        headers = {
+            "Content-Type": "application/json",
+        }
+        try:
+            response = requests.delete(delete_url, headers=headers)
+            
+            if response.status_code == 204:
+                print(f"User {username} successfully removed from the sheet.")
+            else:
+                print(f"Failed to remove user {username}. Status code: {response.status_code}")
+        except Exception as e:
+            print(f"An error occurred while trying to remove user {username}: {e}")
