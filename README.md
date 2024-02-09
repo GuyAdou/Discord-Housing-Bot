@@ -1,6 +1,6 @@
 # Discord-Housing-Bot
 
-Hey there! 👋 Enter the Discord-Housing-Bot - a cool side project turned community lifesaver, designed to smooth out the housing hunt in Discord communities. This Discord bot, is to assist with housing and roommate searches within Discord communities, and automates messaging and data management with integration to Google Sheets.
+Hey there! 👋 Enter the Discord-Housing-Bot - a cool side project turned community lifesaver, designed to smooth out the housing hunt in Discord communities. This Discord bot assists with housing and roommate searches within Discord communities and automates messaging and data management with integration to Google Sheets.
 
 ## Core Features
 
